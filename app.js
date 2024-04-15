@@ -26,6 +26,15 @@ app.use(
 app.use(express.json());
 app.use(cors());
 
+app.get("/api-artists", async (req, res) => {
+  try {
+    const response = await axios.get("https://api.deezer.com/genre/0/artists");
+    res.json(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.listen(3001, function () {
   console.log("Server started on port 3001");
 });
