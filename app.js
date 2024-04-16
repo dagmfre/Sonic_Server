@@ -29,12 +29,23 @@ app.use(cors());
 app.get("/api-artists", async (req, res) => {
   try {
     const response = await axios.get("https://api.deezer.com/genre/0/artists");
-    res.json(response.data);
+    const artistIds = response.data.data.map((artistData) => artistData.id);
+    const firstTenArtistIds = artistIds.slice(0, 10);
+    const artistTopSongs = firstTenArtistIds.map(async (artistId) => {
+      const response2 = await axios.get(
+        `https://api.deezer.com/artist/${artistId}/top?limit=1`
+      );
+      return response2.data; 
+    }); 
+
+    const resolvedArtistTopSongs = await Promise.all(artistTopSongs);
+    res.json(resolvedArtistTopSongs);
   } catch (error) {
     console.log(error);
   }
 });
 
+// https://api.deezer.com/artist/%7BID%7D/top?limit=50
 app.listen(3001, function () {
   console.log("Server started on port 3001");
 });
