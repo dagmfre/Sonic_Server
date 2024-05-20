@@ -13,8 +13,8 @@ const mongodbConnectionString = process.env.MONGODB_URI;
 main().catch((err) => console.log(err));
 async function main() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/musicAppTest");
-    //   await mongoose.connect(mongodbConnectionString);
+    // await mongoose.connect("mongodb://127.0.0.1:27017/musicAppTest");
+    await mongoose.connect(mongodbConnectionString);
   } catch (error) {
     console.error("Error connecting to the database:", error);
   }
@@ -33,9 +33,9 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads");
   },
-  // filename: (req, file, cb) => {
-  //   cb(null, `${Date.now()}-${file.originalname}`);
-  // },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
 });
 
 const upload = multer({ storage: storage });
@@ -48,6 +48,10 @@ const SongSchema = new mongoose.Schema({
 });
 
 const Song = mongoose.model("Song", SongSchema);
+
+app.get("/", (req, res) => {
+  res.send("Hi from '/' the root");
+});
 
 app.get("/api/topArtists", async (req, res) => {
   try {
