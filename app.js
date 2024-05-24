@@ -68,7 +68,7 @@ app.get("/api/topArtists", async (req, res) => {
       } catch (error) {
         console.error(
           `Error fetching top songs for artist ${artistId}:`,
-          error
+          error.response.data
         );
         return null;
       }
@@ -81,8 +81,8 @@ app.get("/api/topArtists", async (req, res) => {
 
     res.json(validSongs);
   } catch (error) {
-    console.log("Error fetching artist data:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.log("Error fetching artist data:", error.response.data);
+    res.status(500).json({ errorMsg: "Internal server error" }, {error: error.response.data});
   }
 });
 
@@ -91,7 +91,7 @@ app.get("/api/artists", async (req, res) => {
     const response = await axios.get("https://api.deezer.com/genre/2/artists");
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
-    console.log(error);
+    console.error(error.response.data);
   }
 });
 
@@ -109,7 +109,7 @@ app.get("/api/tracks", async (req, res) => {
       } catch (error) {
         console.error(
           `Error fetching albums for artist ${artist.artist.name}:`,
-          error
+          error.response.data
         );
         return null;
       }
