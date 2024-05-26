@@ -31,11 +31,10 @@ app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads/");
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    const filename = new Date().toISOString().replace(/:/g, '-');
-    cb(null, filename + file.originalname);
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
