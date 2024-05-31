@@ -105,7 +105,7 @@ app.get("/api/artists", async (req, res) => {
 app.get("/api/tracks", async (req, res) => {
   try {
     const response = await axios.get(
-      "https://sonic-server.vercel.app/api/topArtists"
+      "https://sonic-api.onrender.com/api/topArtists"
     );
     const artistsData = response.data?.map((artist, index) => artist.data[1]);
 
