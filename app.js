@@ -5,20 +5,34 @@ const cors = require("cors");
 const app = express();
 const multer = require("multer");
 require("dotenv").config();
-const path = require("path"); // For path manipulation
+const { GridFsStorage } = require("multer-gridfs-storage");
+const { GridFSBucket } = require("mongodb");
 
 // connecting to mongodb server
 const mongodbConnectionString = process.env.MONGODB_URI;
 
-main().catch((err) => console.log(err));
-async function main() {
-  try {
-    // await mongoose.connect("mongodb://127.0.0.1:27017/musicAppTest");
-    await mongoose.connect(mongodbConnectionString);
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-  }
-}
+mongoose.connect(mongodbConnectionString);
+
+const conn = mongoose.connection;
+let bucket;
+
+conn.once("open", () => {
+  bucket = new GridFSBucket(conn.db, {
+    bucketName: "uploads",
+  });
+});
+
+const storage = new GridFsStorage({
+  url: mongodbConnectionString,
+  file: (req, file) => {
+    return {
+      filename: Buffer.from(file.originalname, "utf8").toString(),
+      bucketName: "uploads",
+    };
+  },
+});
+
+const upload = multer({ storage });
 
 app.use(
   express.urlencoded({
@@ -27,24 +41,12 @@ app.use(
 );
 app.use(express.json());
 app.use(cors());
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage: storage });
 
 const SongSchema = new mongoose.Schema({
   title: String,
   singer: String,
-  imagePath: String,
-  songPath: String,
+  imageFileName: String,
+  audioFileName: String,
 });
 
 const Song = mongoose.model("Song", SongSchema);
@@ -82,7 +84,12 @@ app.get("/api/topArtists", async (req, res) => {
     res.json(validSongs);
   } catch (error) {
     console.log("Error fetching artist data:", error.response.data);
-    res.status(500).json({ errorMsg: "Internal server error" }, {error: error.response.data});
+    res
+      .status(500)
+      .json(
+        { errorMsg: "Internal server error" },
+        { error: error.response.data }
+      );
   }
 });
 
@@ -131,28 +138,23 @@ app.get("/api/tracks", async (req, res) => {
 
 app.post(
   "/api/songs",
-  upload.fields([{ name: "song" }, { name: "image" }]),
+  upload.fields([{ name: "image" }, { name: "song" }]),
   async (req, res) => {
-    const { title, singer } = req.body;
-    const songFile = req.files?.song?.[0];
-    const imageFile = req.files?.image?.[0];
-
-    if (!songFile || !imageFile) {
-      return res
-        .status(400)
-        .json({ message: "Song and image files are required" });
-    }
+    const { title, singer, imageFileName, audioFileName } = req.body;
 
     const newSong = new Song({
       title,
       singer,
-      imagePath: imageFile.path,
-      songPath: songFile.path,
+      imageFileName,
+      audioFileName,
     });
 
     try {
-      await newSong.save();
-      res.json({ message: "Song uploaded successfully!" });
+      await newSong
+        .save()
+        .then(() => console.log("Song Saved Successfully"))
+        .catch((err) => console.log("Error Occurred While Saving Song"));
+      res.send(newSong);
     } catch (err) {
       console.error("Error saving song:", err);
       res.status(500).json({ message: "Error uploading song" });
@@ -160,49 +162,67 @@ app.post(
   }
 );
 
-app.get("/api/songs", async (req, res) => {
+app.get("/file/:filename", async (req, res) => {
   try {
-    const songs = await Song.find({});
+    const file = await conn.db
+      .collection("uploads.files")
+      .findOne({ filename: req.params.filename });
 
-    const myListSong = songs.map((song) => ({
-      title: song.title,
-      singer: song.singer,
-      imagePath: song.imagePath,
-      songPath: song.songPath,
-    }));
-    res.json(myListSong);
-  } catch (error) {
-    console.log(error);
+    if (!file) {
+      console.error("File not found");
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const readstream = bucket.openDownloadStreamByName(file.filename);
+    readstream.on("error", (err) => {
+      console.error("Error while streaming image:", err);
+      return res.status(500).json({ message: "Error streaming image" });
+    });
+    readstream.pipe(res);
+  } catch (err) {
+    console.error("Error fetching image:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-app.get("/uploads/:filename", (req, res) => {
-  const filePath = path.join(__dirname, "uploads", req.params.filename);
+app.delete("/file/:fileNames", async (req, res) => {
+  const fileNames = req.params.fileNames.split(",");
 
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      console.error(err);
-    }
-  });
-});
-
-app.delete("/api/songs/:title", async (req, res) => {
-  const songTitle = req.params.title;
   try {
-    const deletedItem = await Song.deleteOne({ title: songTitle });
+    const [audioFileName, imageFileName] = fileNames;
+    await Song.deleteOne({ audioFileName: audioFileName });
+    const audioFile = await conn.db
+      .collection("uploads.files")
+      .findOne({ filename: audioFileName });
+    const imageFile = await conn.db
+      .collection("uploads.files")
+      .findOne({ filename: imageFileName });
 
-    if (!deletedItem) {
-      return res.status(404).json({ message: "Item not found" });
-    } else {
-      res.status(200).json({ message: "Item deleted successfully" });
+    if (audioFile) {
+      console.log(audioFile);
+      try {
+        await bucket.delete(audioFile._id);
+      } catch (error) {
+        console.error(error);
+      }
     }
+    if (imageFile) {
+      console.log(imageFile);
+      try {
+        await bucket.delete(imageFile._id);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
     console.error("Error deleting item:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
