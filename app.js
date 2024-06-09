@@ -40,7 +40,13 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(cors());
+const cors = require('cors');
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 const SongSchema = new mongoose.Schema({
   title: String,
