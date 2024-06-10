@@ -63,8 +63,7 @@ app.get("/", (req, res) => {
 app.get("/api/topArtists", async (req, res) => {
   try {
     const response = await axios.get("https://api.deezer.com/genre/0/artists");
-    const artistIds =
-      response.data?.data?.map((artistData) => artistData.id) || [];
+    const artistIds = response?.data?.data?.map((artistData) => artistData.id) || [];
     const firstTenArtistIds = artistIds.slice(0, 10);
     const artistTopSongs = firstTenArtistIds.map(async (artistId) => {
       try {
