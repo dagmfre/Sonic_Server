@@ -41,7 +41,7 @@ app.use(
 );
 app.use(express.json());
 const corsOptions ={
-    origin:'http://localhost:3000', 
+    origin:'https://sonic-client.vercel.app', 
     credentials:true,
     optionSuccessStatus:200
 }
@@ -109,7 +109,7 @@ app.get("/api/artists", async (req, res) => {
 app.get("/api/tracks", async (req, res) => {
   try {
     const response = await axios.get(
-      "https://sonic-api.onrender.com/api/topArtists"
+      "https://sonic-server-koyed-26491528.koyeb.app/api/topArtists"
     );
     const artistsData = response.data?.map((artist, index) => artist.data[1]);
 
