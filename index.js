@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(cors());
 
 const artistRoutes = require("./Routes/artistRoutes");
 const topArtists = require("./Routes/topArtists");
