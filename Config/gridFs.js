@@ -1,11 +1,15 @@
 const { GridFSBucket } = require("mongodb");
 const conn = require("./db");
-let bucket;
 
-conn.once("open", () => {
-  bucket = new GridFSBucket(conn.db, {
-    bucketName: "uploads",
-  });
+let bucketPromise = new Promise((resolve, reject) => {
+    conn.once("open", () => {
+        const bucket = new GridFSBucket(conn.db, { bucketName: "uploads" });
+        resolve(bucket);
+    });
+
+    conn.on("error", (err) => {
+        reject(err);
+    });
 });
 
-module.exports = bucket;
+module.exports = bucketPromise;
