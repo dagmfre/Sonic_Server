@@ -5,12 +5,7 @@ require("dotenv").config();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-const corsOptions ={
-  origin:'https://sonic-client.vercel.app/', 
-  credentials:true,           
-  optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+app.use(cors());
 
 const artistRoutes = require("./Routes/artistRoutes");
 const topArtists = require("./Routes/topArtists");
