@@ -1,6 +1,6 @@
 const Song = require("../Models/Song/Song");
-const { conn } = require("../Config/db");
-const { bucket } = require("../Config/gridFs");
+const conn = require("../Config/db");
+const bucket = require("../Config/gridFs");
 
 const getFile = async (req, res) => {
   try {

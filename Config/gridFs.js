@@ -8,4 +8,4 @@ conn.once("open", () => {
   });
 });
 
-module.exports = { bucket };
+module.exports = bucket;
