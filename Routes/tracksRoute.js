@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTracks } = require("../controllers/artistTracksController");
+const { getTracks } = require("../Controllers/artistTracksController");
 
 const router = express.Router();
 
