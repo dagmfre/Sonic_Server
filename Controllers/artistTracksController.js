@@ -1,4 +1,4 @@
-const axios = require("../utils/axiosInstance");
+const axios = require("axios");
 
 const getTopArtists = async (req, res) => {
   try {
