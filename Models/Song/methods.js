@@ -1,3 +1,7 @@
-export const uploadSong = async function (songMetaData) {
+const uploadSong = async function (songMetaData) {
   return await this.save(songMetaData);
+};
+
+module.exports = {
+  uploadSong
 };
