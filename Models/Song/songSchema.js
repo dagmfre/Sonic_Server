@@ -9,9 +9,10 @@ const SongSchema = new mongoose.Schema({
   audioFileName: String,
 });
 
-//add method to schema
+// Add methods to schema
 SongSchema.method(methods);
 
-//add static to schema
+// Add statics to schema
 SongSchema.static(statics);
-export default SongSchema;
+
+module.exports = SongSchema;
