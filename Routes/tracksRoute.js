@@ -3,6 +3,6 @@ const { getTracks } = require("../controllers/artistTracksController");
 
 const router = express.Router();
 
-router.get("/tracks", getTracks);
+router.get("/", getTracks);
 
 module.exports = router;

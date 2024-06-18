@@ -3,6 +3,6 @@ const { getTopArtists } = require("../controllers/artistTracksController");
 
 const router = express.Router();
 
-router.get("/topArtists", getTopArtists);
+router.get("/", getTopArtists);
 
 module.exports = router;
