@@ -11,9 +11,9 @@ const topArtists = require("./Routes/topArtists");
 const songRoutes = require("./Routes/songRoutes");
 const fileRoutes = require("./Routes/fileRoutes");
 
-app.use("/artist", artistRoutes);
-app.use("/topArtists", topArtists);
-app.use("/songs", songRoutes);
+app.use("/api/artists", artistRoutes);
+app.use("/api/topArtists", topArtists);
+app.use("/api/songs", songRoutes);
 app.use("/file", fileRoutes);
 
 const PORT = process.env.PORT || 3001;
