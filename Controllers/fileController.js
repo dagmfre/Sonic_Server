@@ -6,7 +6,7 @@ const getFile = async (req, res) => {
   try {
     const file = await conn.db
       .collection("uploads.files")
-      .getSongByAudioFileName({ filename: req.params.filename });
+      .getSongByAudioFileName(req.params.filename);
 
     if (!file) {
       console.error("File not found");
@@ -30,7 +30,7 @@ const deleteFile = async (req, res) => {
 
   try {
     const [audioFileName, imageFileName] = fileNames;
-    await Song.deleteSongMetaDataByFileName({ audioFileName: audioFileName });
+    await Song.deleteSongMetaDataByFileName(audioFileName);
     const audioFile = await conn.db
       .collection("uploads.files")
       .getSongByAudioFileName({ filename: audioFileName });
@@ -40,14 +40,14 @@ const deleteFile = async (req, res) => {
 
     if (audioFile) {
       try {
-        await bucket.delete(audioFile._id);
+        await bucket.deleteSongsAndImagesFilesById(audioFile._id);
       } catch (error) {
         console.error(error);
       }
     }
     if (imageFile) {
       try {
-        await bucket.delete(imageFile._id);
+        await bucket.deleteSongsAndImagesFilesById(imageFile._id);
       } catch (error) {
         console.error(error);
       }
