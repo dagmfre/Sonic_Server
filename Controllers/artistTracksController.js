@@ -54,12 +54,12 @@ const getTracks = async (req, res) => {
 
     const trackListPromises = artistsData.map(async (artist) => {
       try {
-        const response2 = await axios.get(artist.artist.tracklist);
+        const response2 = await axios.get(artist?.artist?.tracklist);
         return response2.data;
       } catch (error) {
         console.error(
-          `Error fetching albums for artist ${artist.artist.name}:`,
-          error.response.data
+          `Error fetching albums for artist ${artist?.artist?.name}:`,
+          error?.response?.data
         );
         return null;
       }
