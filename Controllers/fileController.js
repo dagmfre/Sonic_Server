@@ -1,7 +1,6 @@
+const Song = require("../Models/Song/Song");
 const { conn } = require("../Config/db");
 const { bucket } = require("../Config/gridFs");
-
-const Song = require("../Models/Song");
 
 const getFile = async (req, res) => {
   try {
@@ -31,7 +30,7 @@ const deleteFile = async (req, res) => {
 
   try {
     const [audioFileName, imageFileName] = fileNames;
-    await Song.deleteSongByAudioFileName({ audioFileName: audioFileName });
+    await Song.deleteSongMetaDataByFileName({ audioFileName: audioFileName });
     const audioFile = await conn.db
       .collection("uploads.files")
       .getSongByAudioFileName({ filename: audioFileName });
