@@ -1,18 +1,18 @@
 const Song = require("../Models/Song/Song");
 const conn = require("../Config/db");
-const bucket = require("../Config/gridFs");
+const bucketPromise = require("../Config/gridFs");
 
 const getFile = async (req, res) => {
   try {
     const file = await conn.db
       .collection("uploads.files")
-      .getSongByAudioFileName(req.params.filename);
+      .findOne({ filename: req.params.filename });
 
     if (!file) {
       console.error("File not found");
       return res.status(404).json({ message: "File not found" });
     }
-
+    const bucket = await bucketPromise;
     const readstream = bucket.openDownloadStreamByName(file.filename);
     readstream.on("error", (err) => {
       console.error("Error while streaming image:", err);
@@ -27,27 +27,28 @@ const getFile = async (req, res) => {
 
 const deleteFile = async (req, res) => {
   const fileNames = req.params.fileNames.split(",");
+  const bucket = await bucketPromise;
 
   try {
     const [audioFileName, imageFileName] = fileNames;
     await Song.deleteSongMetaDataByFileName(audioFileName);
     const audioFile = await conn.db
       .collection("uploads.files")
-      .getSongByAudioFileName({ filename: audioFileName });
+      .findOne({ filename: audioFileName });
     const imageFile = await conn.db
       .collection("uploads.files")
-      .getSongByAudioFileName({ filename: imageFileName });
+      .findOne({ filename: imageFileName });
 
     if (audioFile) {
       try {
-        await bucket.deleteSongsAndImagesFilesById(audioFile._id);
+        await bucket.delete(audioFile._id);
       } catch (error) {
         console.error(error);
       }
     }
     if (imageFile) {
       try {
-        await bucket.deleteSongsAndImagesFilesById(imageFile._id);
+        await bucket.delete(imageFile._id);
       } catch (error) {
         console.error(error);
       }
