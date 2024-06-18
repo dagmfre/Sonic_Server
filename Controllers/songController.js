@@ -1,4 +1,4 @@
-const Song = require("../models/Song");
+const Song = require("../Models/Song/Song");
 
 const songUploader = async (req, res) => {
   const { title, singer, imageFileName, audioFileName } = req.body;
