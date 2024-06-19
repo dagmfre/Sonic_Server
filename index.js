@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const globalErrorHandler = require("./Middlewares/globalErrorHandler");
 require("dotenv").config();
 
 app.use(express.urlencoded({ extended: true }));
@@ -15,9 +16,12 @@ const tracksRoute = require("./Routes/tracksRoute");
 
 app.use("/api/artists", artistRoutes);
 app.use("/api/topArtists", topArtists);
-app.use("/api/songs", songRoutes);
 app.use("/api/tracks", tracksRoute);
+app.use("/api/songs", songRoutes);
 app.use("/file", fileRoutes);
+
+// Global error handler middleware
+app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
