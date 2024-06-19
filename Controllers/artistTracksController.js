@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const getTopArtists = async (req, res) => {
+const getTopArtists = async (req, res, next) => {
   try {
     const response = await axios.get("https://api.deezer.com/genre/0/artists");
     const artistIds =
@@ -13,10 +13,9 @@ const getTopArtists = async (req, res) => {
         );
         return response2.data;
       } catch (error) {
-        console.error(
-          `Error fetching top songs for artist ${artistId}:`,
-          error.response.data
-        );
+        next({
+          error: `Error fetching top songs`,
+        });
         return null;
       }
     });
@@ -28,28 +27,28 @@ const getTopArtists = async (req, res) => {
 
     res.json(validSongs);
   } catch (error) {
-    console.log("Error fetching artist data:", error.response.data);
-    res
-      .status(500)
-      .json(
-        { errorMsg: "Internal server error" },
-        { error: error.response.data }
-      );
+    next({
+      error: `Error fetching artist data`,
+    });
   }
 };
 
-const getArtists = async (req, res) => {
+const getArtists = async (req, res, next) => {
   try {
     const response = await axios.get("https://api.deezer.com/genre/2/artists");
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
-    console.error(error.response.data);
+    next({
+      error: `Error fetching all artists`,
+    });
   }
 };
 
-const getTracks = async (req, res) => {
+const getTracks = async (req, res, next) => {
   try {
-    const response = await axios.get("https://sonic-server.vercel.app/api/topArtists");
+    const response = await axios.get(
+      "https://sonic-server.vercel.app/api/topArtists"
+    );
     const artistsData = response.data?.map((artist, index) => artist.data[1]);
 
     const trackListPromises = artistsData.map(async (artist) => {
@@ -57,10 +56,9 @@ const getTracks = async (req, res) => {
         const response2 = await axios.get(artist?.artist?.tracklist);
         return response2.data;
       } catch (error) {
-        console.error(
-          `Error fetching albums for artist ${artist?.artist?.name}:`,
-          error?.response?.data
-        );
+        next({
+          error: `Error fetching albums for artist`,
+        });
         return null;
       }
     });
@@ -75,7 +73,9 @@ const getTracks = async (req, res) => {
     }));
     res.json(slicedTrackList);
   } catch (error) {
-    console.log(error);
+    next({
+      error: `Error fetching tracks`,
+    });
   }
 };
 

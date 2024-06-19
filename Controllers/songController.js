@@ -1,6 +1,6 @@
 const Song = require("../Models/Song/Song");
 
-const songUploader = async (req, res) => {
+const songUploader = async (req, res, next) => {
   const { title, singer, imageFileName, audioFileName } = req.body;
 
   const newSong = new Song({
@@ -16,7 +16,10 @@ const songUploader = async (req, res) => {
     res.send(newSong);
   } catch (err) {
     console.error("Error saving song:", err);
-    res.status(500).json({ message: "Error uploading song" });
+    next({
+      status: 500,
+      error: "Error uploading song",
+    });
   }
 };
 
