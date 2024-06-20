@@ -13,12 +13,16 @@ const topArtists = require("./Routes/topArtists");
 const songRoutes = require("./Routes/songRoutes");
 const fileRoutes = require("./Routes/fileRoutes");
 const tracksRoute = require("./Routes/tracksRoute");
+const loginRoute = require("./Routes/loginRoutes");
+const signupRoute = require("./Routes/signupRoutes");
 
 app.use("/api/artists", artistRoutes);
 app.use("/api/topArtists", topArtists);
 app.use("/api/tracks", tracksRoute);
 app.use("/api/songs", songRoutes);
 app.use("/file", fileRoutes);
+app.use("/login", loginRoute);
+app.use("/register", signupRoute);
 
 // Global error handler middleware
 app.use(globalErrorHandler);

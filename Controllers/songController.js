@@ -1,7 +1,12 @@
 const Song = require("../Models/Song/Song");
+const User = require("../Models/Users/userModel");
 
 const songUploader = async (req, res, next) => {
   const { title, singer, imageFileName, audioFileName } = req.body;
+  const token = req.cookies.token;
+  const secret = process.env.SECRET_KEY;
+  const decoded = jwt.verify(token, secret);
+  const userId = decoded.userId;
 
   const newSong = new Song({
     title,
@@ -11,7 +16,10 @@ const songUploader = async (req, res, next) => {
   });
 
   try {
-    await newSong.uploadSong(newSong);
+    const savedSong = await newSong.uploadSong(newSong);
+    await User.findByIdAndUpdate(userId, {
+      $push: { uploadedSongs: savedSong._id },
+    });
     console.log("Song Saved Successfully");
     res.send(newSong);
   } catch (err) {

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const methods = require("./methods");
 const statics = require("./statics");
 
-const SongSchema = new mongoose.Schema({
+const songSchema = new mongoose.Schema({
   title: String,
   singer: String,
   imageFileName: String,
@@ -10,9 +10,9 @@ const SongSchema = new mongoose.Schema({
 });
 
 // Add methods to schema
-SongSchema.method(methods);
+songSchema.method(methods);
 
 // Add statics to schema
-SongSchema.static(statics);
+songSchema.static(statics);
 
-module.exports = SongSchema;
+module.exports = songSchema;
