@@ -1,7 +1,5 @@
 const findSongByEmail = async function (email) {
-  await this.findOne(email);
+  return await this.findOne(email);
 };
 
-module.exports = {
-  findSongByEmail,
-};
+module.exports = { findSongByEmail };
