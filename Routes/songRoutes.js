@@ -1,7 +1,7 @@
 const express = require("express");
 const { songUploader } = require("../Controllers/songController");
 const upload = require("../Config/multer");
-const { validateSong } = require("../Validations/validate");
+const { validateSong } = require("../Validations/validateSong");
 const { validationResult } = require("express-validator");
 
 const router = express.Router();
