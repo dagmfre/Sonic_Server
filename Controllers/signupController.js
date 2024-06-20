@@ -1,25 +1,22 @@
 const User = require("../Models/Users/userModel");
+const bcrypt = require("bcrypt");
 const { createSecretToken } = require("../Utils/secretToken");
 
 const signupController = async (req, res, next) => {
   const { email, password, username } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 12);
   const newUser = new User({
     email,
-    password,
+    password: hashedPassword,
     username,
   });
 
   try {
     const existingUser = await User.findSongByEmail({ email });
-    console.log(email, req.body);
     if (existingUser) {
       return res.json({ message: "User already exists" });
     }
-    const user = await newUser.saveRegisteredUser({
-      email,
-      password,
-      username,
-    });
+    const user = await newUser.save();
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
