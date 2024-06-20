@@ -3,17 +3,16 @@ const methods = require("./methods");
 const statics = require("./statics");
 
 const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-  },
-  username: {
-    type: String,
-  },
-  password: {
-    type: String,
-  },
+  email: String,
+  username: String,
+  password: String,
   // Array of song IDs uploaded by current authorized user
-  uploadedSongs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Song" }],
+  uploadedSongs: [
+    {
+      title: String,
+      singer: String,
+    },
+  ],
 });
 
 // Add methods to schema
