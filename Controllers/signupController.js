@@ -30,7 +30,7 @@ const signupController = async (req, res, next) => {
     console.log(error);
     next({
       status: 500,
-      error: "Error registering user",
+      error: "Error registering user" + error,
     });
   }
 };

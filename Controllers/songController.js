@@ -24,7 +24,7 @@ const songUploader = async (req, res, next) => {
     console.error("Error saving song:", err);
     next({
       status: 500,
-      error: "Error uploading song",
+      error: "Error uploading song" + error,
     });
   }
 };

@@ -20,7 +20,7 @@ const getFile = async (req, res, next) => {
       console.error("Error while streaming image:", err);
       next({
         status: 500,
-        error: "Error streaming image",
+        error: "Error streaming image" + err,
       });
     });
 
@@ -29,7 +29,7 @@ const getFile = async (req, res, next) => {
     console.error("Error fetching image:", err);
     next({
       status: 500,
-      error: "Internal server error",
+      error: "Internal server error" + err,
     });
   }
 };
@@ -56,7 +56,7 @@ const deleteFile = async (req, res, next) => {
         console.error("Error deleting audio file from bucket:", error);
         next({
           status: 500,
-          error: "Error deleting audio file from bucket",
+          error: "Error deleting audio file from bucket" + error,
         });
       }
     }
@@ -68,7 +68,7 @@ const deleteFile = async (req, res, next) => {
         console.error("Error deleting image file from bucket:", error);
         next({
           status: 500,
-          error: "Error deleting image file from bucket",
+          error: "Error deleting image file from bucket" + error,
         });
       }
     }
@@ -78,7 +78,7 @@ const deleteFile = async (req, res, next) => {
     console.error("Error deleting item:", error);
     next({
       status: 500,
-      error: "Internal server error",
+      error: "Internal server error" + error,
     });
   }
 };

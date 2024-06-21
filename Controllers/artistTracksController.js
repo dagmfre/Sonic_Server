@@ -14,7 +14,7 @@ const getTopArtists = async (req, res, next) => {
         return response2.data;
       } catch (error) {
         next({
-          error: `Error fetching top songs`,
+          error: `Error fetching top songs` + error,
         });
         return null;
       }
@@ -28,7 +28,7 @@ const getTopArtists = async (req, res, next) => {
     res.json(validSongs);
   } catch (error) {
     next({
-      error: `Error fetching artist data`,
+      error: `Error fetching artist data` + error,
     });
   }
 };
@@ -39,7 +39,7 @@ const getArtists = async (req, res, next) => {
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
     next({
-      error: `Error fetching all artists`,
+      error: `Error fetching all artists` + error,
     });
   }
 };
@@ -57,7 +57,7 @@ const getTracks = async (req, res, next) => {
         return response2.data;
       } catch (error) {
         next({
-          error: `Error fetching albums for artist`,
+          error: `Error fetching albums for artist` + error,
         });
         return null;
       }
@@ -74,7 +74,7 @@ const getTracks = async (req, res, next) => {
     res.json(slicedTrackList);
   } catch (error) {
     next({
-      error: `Error fetching tracks`,
+      error: `Error fetching tracks` + error,
     });
   }
 };

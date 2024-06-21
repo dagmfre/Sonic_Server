@@ -5,12 +5,10 @@ const bcrypt = require("bcrypt");
 const loginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
     if (!email || !password) {
       return res.json({ message: "All fields are required" });
     }
     const user = await User.findSongByEmail(email);
-    console.log(user);
     if (!user) {
       return res.json({ message: "Incorrect password or email" });
     }
@@ -30,7 +28,7 @@ const loginController = async (req, res, next) => {
   } catch (error) {
     next({
       status: 500,
-      error: "Error logging in user",
+      error: "Error logging in user" + error,
     });
   }
 };
