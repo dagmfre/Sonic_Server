@@ -21,6 +21,7 @@ const signupRoute = require("./Routes/signupRoutes");
 
 app.use("/login", loginRoute);
 app.use("/register", signupRoute);
+app.use("/logout", logoutRoute);
 app.use(isAuthenticated);
 app.use("/api/artists", artistRoutes);
 app.use("/api/topArtists", topArtists);
