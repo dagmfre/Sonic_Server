@@ -16,7 +16,8 @@ const loginController = async (req, res, next) => {
     if (!auth) {
       return res.json({ message: "Incorrect password or email" });
     }
-    const token = createSecretToken(user._id);
+    const role = "user";
+    const token = createSecretToken(user._id, role);
     res.cookie("token", token, {
       withCredentials: true,
       httpOnly: false,

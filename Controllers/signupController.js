@@ -17,7 +17,8 @@ const signupController = async (req, res, next) => {
       return res.json({ message: "User already exists" });
     }
     const user = await newUser.save();
-    const token = createSecretToken(user._id);
+    const role = "user";
+    const token = createSecretToken(user._id, role);
     res.cookie("token", token, {
       withCredentials: true,
       httpOnly: false,
