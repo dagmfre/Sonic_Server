@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const isAuthenticated = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ message: 'Authorization denied' });
+    return res.status(401).json({ message: "Authorization denied" });
   }
 
   try {
@@ -12,7 +12,10 @@ const isAuthenticated = (req, res, next) => {
     req.user = decoded.user;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
+    next({
+      status: 401,
+      error: "Token is not valid" + err,
+    });
   }
 };
 
