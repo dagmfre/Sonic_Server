@@ -1,8 +1,6 @@
 version: '26.1'
 services:
   backend:
-    image: dagmfre/sonic_server
-    ports:
-      - "5000:5000"
+    image: ./
     env_file:
       - .env
