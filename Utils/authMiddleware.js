@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
-
-const isAuthenticated = (req, res, next) => {
+import jwt from 'jsonwebtoken';
+import userModel from '../Models/Users/userModel.js';
+const isAuthenticated = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -9,14 +9,25 @@ const isAuthenticated = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = decoded.user;
+    const user = await userModel.findById({ _id: decoded.id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    req.user = user;
     next();
-  } catch (err) {
-    next({
-      status: 401,
-      error: "Token is not valid" + err,
-    });
+  } catch (error) {
+    error,
+      next({ error, 
+        status: 401,
+        error:
+          "Internal server error, could not retrieve user" +
+          " " +
+          error.message,
+      });
+    console.log(error);
   }
 };
 
-module.exports = isAuthenticated;
+export default isAuthenticated;

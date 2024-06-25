@@ -1,6 +1,6 @@
-const User = require("../Models/Users/userModel");
-const bcrypt = require("bcrypt");
-const { createSecretToken } = require("../Utils/secretToken");
+import User from '../Models/Users/userModel.js';
+import bcrypt from 'bcrypt';
+import createSecretToken from '../Utils/secretToken.js';
 
 const signupController = async (req, res, next) => {
   const { email, password, username } = req.body;
@@ -26,14 +26,12 @@ const signupController = async (req, res, next) => {
     res
       .status(201)
       .json({ message: "User signed in successfully", success: true, user });
-    next();
   } catch (error) {
-    console.log(error);
-    next({
+    next({ error, 
       status: 500,
       error: "Error registering user" + error,
     });
   }
 };
 
-module.exports = signupController;
+export default signupController;

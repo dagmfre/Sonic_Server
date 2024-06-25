@@ -1,7 +1,7 @@
-const express = require("express");
-const { getArtists } = require("../Controllers/artistTracksController");
+import express from "express";
+import { getArtists } from "../Controllers/artistTracksController.js";
 const router = express.Router();
 
 router.get("/", getArtists);
 
-module.exports = router;
+export default router;

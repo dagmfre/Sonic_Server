@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const methods = require("./methods");
-const statics = require("./statics");
+import mongoose from 'mongoose';
+import methods from './methods.js';
+import statics from './statics.js';
 
 const userSchema = new mongoose.Schema({
   email: String,
@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
     {
       title: String,
       singer: String,
+      imageFileName: String,
+      audioFileName: String,
     },
   ],
 });
@@ -21,4 +23,4 @@ userSchema.method(methods);
 // Add statics to schema
 userSchema.static(statics);
 
-module.exports = userSchema;
+export default userSchema;

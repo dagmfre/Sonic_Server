@@ -1,4 +1,4 @@
-const AccessControl = require("accesscontrol");
+import AccessControl from 'accesscontrol';
 
 const ac = new AccessControl();
 
@@ -8,4 +8,4 @@ ac.grant("user")
   .readOwn("files")
   .deleteOwn("files");
 
-module.exports = ac;
+export default ac;

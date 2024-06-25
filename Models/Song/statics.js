@@ -3,6 +3,4 @@ const deleteSongMetaDataByFileName = async function (audioFileName) {
   return await this.deleteOne({ filename: audioFileName });
 };
 
-module.exports = {
-  deleteSongMetaDataByFileName,
-};
+export default deleteSongMetaDataByFileName;

@@ -1,6 +1,6 @@
-const Song = require("../Models/Song/Song");
-const conn = require("../Config/db");
-const bucketPromise = require("../Config/gridFs");
+import Song from '../Models/Song/Song.js';
+import conn from '../Config/db.js';
+import bucketPromise from '../Config/gridFs.js';
 
 const getFile = async (req, res, next) => {
   try {
@@ -16,20 +16,20 @@ const getFile = async (req, res, next) => {
     const bucket = await bucketPromise;
     const readstream = bucket.openDownloadStreamByName(file.filename);
 
-    readstream.on("error", (err) => {
-      console.error("Error while streaming image:", err);
-      next({
+    readstream.on("error", (error) => {
+      console.error("Error while streaming image:", error);
+      next({ error, 
         status: 500,
-        error: "Error streaming image" + err,
+        error: "Error streaming image" + error,
       });
     });
 
     readstream.pipe(res);
-  } catch (err) {
-    console.error("Error fetching image:", err);
-    next({
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    next({ error, 
       status: 500,
-      error: "Internal server error" + err,
+      error: "Internal server error" + error,
     });
   }
 };
@@ -54,7 +54,7 @@ const deleteFile = async (req, res, next) => {
         await bucket.delete(audioFile._id);
       } catch (error) {
         console.error("Error deleting audio file from bucket:", error);
-        next({
+        next({ error, 
           status: 500,
           error: "Error deleting audio file from bucket" + error,
         });
@@ -66,7 +66,7 @@ const deleteFile = async (req, res, next) => {
         await bucket.delete(imageFile._id);
       } catch (error) {
         console.error("Error deleting image file from bucket:", error);
-        next({
+        next({ error, 
           status: 500,
           error: "Error deleting image file from bucket" + error,
         });
@@ -76,10 +76,10 @@ const deleteFile = async (req, res, next) => {
     return res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
     console.error("Error deleting item:", error);
-    next({
+    next({ error, 
       status: 500,
       error: "Internal server error" + error,
     });
   }
 };
-module.exports = { getFile, deleteFile };
+export { getFile, deleteFile };

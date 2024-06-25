@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios";
 
 const getTopArtists = async (req, res, next) => {
   try {
@@ -13,9 +13,7 @@ const getTopArtists = async (req, res, next) => {
         );
         return response2.data;
       } catch (error) {
-        next({
-          error: `Error fetching top songs` + error,
-        });
+        next({ error, error: `Error fetching top songs` + error });
         return null;
       }
     });
@@ -27,9 +25,7 @@ const getTopArtists = async (req, res, next) => {
 
     res.json(validSongs);
   } catch (error) {
-    next({
-      error: `Error fetching artist data` + error,
-    });
+    next({ error, error: `Error fetching artist data` + error });
   }
 };
 
@@ -38,16 +34,20 @@ const getArtists = async (req, res, next) => {
     const response = await axios.get("https://api.deezer.com/genre/2/artists");
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
-    next({
-      error: `Error fetching all artists` + error,
-    });
+    next({ error, error: `Error fetching all artists` + error });
   }
 };
 
 const getTracks = async (req, res, next) => {
   try {
+    const token = req.headers.authorization.split(" ")[1];
     const response = await axios.get(
-      "https://sonic-server.vercel.app/api/topArtists"
+      "https://sonic-server.vercel.app/api/topArtists",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     const artistsData = response.data?.map((artist, index) => artist.data[1]);
 
@@ -56,9 +56,7 @@ const getTracks = async (req, res, next) => {
         const response2 = await axios.get(artist?.artist?.tracklist);
         return response2.data;
       } catch (error) {
-        next({
-          error: `Error fetching albums for artist` + error,
-        });
+        next({ error, error: `Error fetching albums for artist` + error });
         return null;
       }
     });
@@ -73,10 +71,8 @@ const getTracks = async (req, res, next) => {
     }));
     res.json(slicedTrackList);
   } catch (error) {
-    next({
-      error: `Error fetching tracks` + error,
-    });
+    next({ error, error: `Error fetching tracks` + error });
   }
 };
 
-module.exports = { getTopArtists, getArtists, getTracks };
+export { getTopArtists, getArtists, getTracks };

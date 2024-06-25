@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const methods = require("./methods");
-const statics = require("./statics");
+import mongoose from 'mongoose';
+import methods from './methods.js';
+import statics from './statics.js';
 
 const songSchema = new mongoose.Schema({
   title: String,
@@ -15,4 +15,4 @@ songSchema.method(methods);
 // Add statics to schema
 songSchema.static(statics);
 
-module.exports = songSchema;
+export default songSchema;
