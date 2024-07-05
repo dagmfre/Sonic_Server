@@ -20,7 +20,7 @@ const admin = new AdminJs({
         },
         listProperties: ["_id", "email", "username", "avatar"],
         showProperties: ["_id", "email", "username", "avatar"],
-        editProperties: ["email", "role"],
+        editProperties: ["email", "username", "password"],
         properties: {
           avatar: {
             type: "string",
