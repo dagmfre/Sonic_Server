@@ -8,7 +8,7 @@ const loginController = async (req, res, next) => {
     if (!email || !password) {
       return res.json({ message: "All fields are required" });
     }
-    const user = await User.findSongByEmail(email);
+    const user = await User.findUserByEmail(email);
     if (!user) {
       return res.json({ message: "Incorrect password or email" });
     }
@@ -25,9 +25,12 @@ const loginController = async (req, res, next) => {
     res
       .status(201)
       .json({ message: "User logged in successfully", success: true });
-    next();
   } catch (error) {
-    next({ error, status: 500, error: "Error logging in user" + error });
+    next({
+      error,
+      status: 500,
+      error: "Error logging in user" + error.message,
+    });
   }
 };
 
