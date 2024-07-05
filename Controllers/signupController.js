@@ -1,6 +1,6 @@
-import User from '../Models/Users/userModel.js';
-import bcrypt from 'bcrypt';
-import createSecretToken from '../Utils/secretToken.js';
+import User from "../Models/Users/userModel.js";
+import bcrypt from "bcrypt";
+import createSecretToken from "../Utils/secretToken.js";
 
 const signupController = async (req, res, next) => {
   const { email, password, username } = req.body;
@@ -12,7 +12,7 @@ const signupController = async (req, res, next) => {
   });
 
   try {
-    const existingUser = await User.findSongByEmail({ email });
+    const existingUser = await User.findUserByEmail(email);
     if (existingUser) {
       return res.json({ message: "User already exists" });
     }
@@ -27,10 +27,7 @@ const signupController = async (req, res, next) => {
       .status(201)
       .json({ message: "User signed in successfully", success: true, user });
   } catch (error) {
-    next({ error, 
-      status: 500,
-      error: "Error registering user" + error,
-    });
+    next({ error, status: 500, error: "Error registering user" + error });
   }
 };
 
