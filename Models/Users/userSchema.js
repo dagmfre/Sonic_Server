@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import methods from './methods.js';
-import statics from './statics.js';
+import mongoose from "mongoose";
+import methods from "./methods.js";
+import statics from "./statics.js";
 
 const userSchema = new mongoose.Schema({
   email: String,
@@ -18,9 +18,13 @@ const userSchema = new mongoose.Schema({
 });
 
 // Add methods to schema
-userSchema.method(methods);
+userSchema.methods.saveRegisteredUser = async function () {
+  return await this.save();
+};
 
 // Add statics to schema
-userSchema.static(statics);
+userSchema.statics.findUserByEmail = async function (email) {
+  return await this.findOne({ email });
+};
 
 export default userSchema;
