@@ -13,8 +13,9 @@ const getTopArtists = async (req, res, next) => {
         );
         return response2.data;
       } catch (error) {
-        next({ error, error: `Error fetching top songs` + error });
-        return null;
+        res
+          .status(500)
+          .json({ error, error: `Error fetching albums for artist` + error });
       }
     });
 
@@ -25,7 +26,9 @@ const getTopArtists = async (req, res, next) => {
 
     res.json(validSongs);
   } catch (error) {
-    next({ error, error: `Error fetching artist data` + error });
+    res
+      .status(500)
+      .json({ error, error: `Error fetching artist data` + error });
   }
 };
 
@@ -34,13 +37,18 @@ const getArtists = async (req, res, next) => {
     const response = await axios.get("https://api.deezer.com/genre/2/artists");
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
-    next({ error, error: `Error fetching all artists` + error });
+    res
+      .status(500)
+      .json({ error, error: `Error fetching all artists` + error });
   }
 };
 
 const getTracks = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     const response = await axios.get(
       "https://sonic-server.vercel.app/api/topArtists",
       {
@@ -49,6 +57,7 @@ const getTracks = async (req, res, next) => {
         },
       }
     );
+    console.log(response);
     const artistsData = response.data?.map((artist, index) => artist.data[1]);
 
     const trackListPromises = artistsData.map(async (artist) => {
@@ -56,8 +65,9 @@ const getTracks = async (req, res, next) => {
         const response2 = await axios.get(artist?.artist?.tracklist);
         return response2.data;
       } catch (error) {
-        next({ error, error: `Error fetching albums for artist` + error });
-        return null;
+        res
+          .status(500)
+          .json({ error, error: `Error fetching albums for artist` + error });
       }
     });
 
