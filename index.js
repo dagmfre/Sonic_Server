@@ -10,11 +10,11 @@ import { admin, adminRouter } from "./config/admin.js";
 dotenv.config();
 
 // Middleware setupz
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
 app.use(admin.options.rootPath, adminRouter);
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
 
 // Importing route handlers
 import artistRoutes from "./Routes/artistRoutes.js";
