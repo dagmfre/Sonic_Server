@@ -1,4 +1,4 @@
-import AdminJs, { ListAction } from "adminjs";
+import AdminJS from "adminjs";
 import AdminJsExpress from "@adminjs/express";
 import * as AdminJsMongoose from "@adminjs/mongoose";
 import User from "../Models/Users/userModel.js";
@@ -8,9 +8,9 @@ import { Components, componentLoader } from "../Components/components.js";
 
 dotenv.config();
 
-AdminJs.registerAdapter(AdminJsMongoose);
+AdminJS.registerAdapter(AdminJsMongoose);
 
-const admin = new AdminJs({
+const admin = new AdminJS({
   resources: [
     {
       resource: User,
