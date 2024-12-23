@@ -1,4 +1,4 @@
-const saveRegisteredUser = async function () {
+const saveRegisteredUser = async () => {
   return await this.save();
 };
 
