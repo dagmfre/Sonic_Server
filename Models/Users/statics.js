@@ -1,5 +1,5 @@
-const findSongByEmail = async function (email) {
-  return await this.findOne(email);
+const findUserByEmail = async function (email) {
+  return await this.findOne({ email });
 };
 
-export default { findSongByEmail };
+export default { findUserByEmail };
