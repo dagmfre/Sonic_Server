@@ -2,7 +2,7 @@ import express from 'express';
 import songUploader from '../Controllers/songController.js';
 import upload from '../Config/multer.js';
 import validateSong from '../Validations/validateSong.js';
-import validationResult from 'express-validator';
+import { validationResult } from 'express-validator';
 import accessControl from '../Utils/accessControl.js';
 import User from '../Models/Users/userModel.js';
 
@@ -16,7 +16,7 @@ const checkValidation = (req, res, next) => {
   next();
 };
 
-const isOwner = async (filename, sender) => {
+const isOwner = async (sender) => {
   // Find a user who owns the file, either audio or image
   const fileOwner = await User.findById(sender.id);
   console.log(fileOwner, sender);
