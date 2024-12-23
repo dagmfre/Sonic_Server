@@ -18,13 +18,9 @@ const userSchema = new mongoose.Schema({
 });
 
 // Add methods to schema
-userSchema.methods.saveRegisteredUser = async function () {
-  return await this.save();
-};
+userSchema.method(methods);
 
 // Add statics to schema
-userSchema.statics.findUserByEmail = async function (email) {
-  return await this.findOne({ email });
-};
+userSchema.static(statics);
 
 export default userSchema;
