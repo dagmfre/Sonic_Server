@@ -1,5 +1,5 @@
-const uploadSong = async function (songMetaData) {
-  return await this.save(songMetaData);
+const uploadSong = async function () {
+  return await this.save();
 };
 
-export default uploadSong;
+export default { uploadSong };
