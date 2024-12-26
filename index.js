@@ -1,20 +1,10 @@
 import express from "express";
 import cors from "cors";
-const app = express();
 import globalErrorHandler from "./Utils/globalErrorHandler.js";
 import isAuthenticated from "./Utils/authMiddleware.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { admin, adminRouter } from "./config/admin.js";
-
-dotenv.config();
-
-// Middleware setupz
-app.use(admin.options.rootPath, adminRouter);
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
 
 // Importing route handlers
 import artistRoutes from "./Routes/artistRoutes.js";
@@ -24,6 +14,18 @@ import fileRoutes from "./Routes/fileRoutes.js";
 import tracksRoute from "./Routes/tracksRoute.js";
 import loginRoute from "./Routes/loginRoutes.js";
 import signupRoute from "./Routes/signupRoutes.js";
+
+dotenv.config();
+
+const app = express();
+
+// Middleware setupz
+app.use(admin.options.rootPath, adminRouter);
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+
 
 // Publicly accessible routes
 app.use("/login", loginRoute);
