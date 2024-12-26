@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import userModel from '../Models/Users/userModel.js';
+import jwt from "jsonwebtoken";
+import userModel from "../Models/Users/userModel.js";
 const isAuthenticated = async (req, res, next) => {
   const token = req.cookies.token;
 
@@ -19,14 +19,14 @@ const isAuthenticated = async (req, res, next) => {
     next();
   } catch (error) {
     error,
-      next({ error, 
+      next({
+        error,
         status: 401,
         error:
           "Internal server error, could not retrieve user" +
           " " +
           error.message,
       });
-    console.log(error);
   }
 };
 
