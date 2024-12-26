@@ -19,6 +19,11 @@ dotenv.config();
 
 const app = express();
 
+// Welcome
+app.get("/", (req, res) => {
+  res.send("Welcome to the Sonic Server!");
+});
+
 // Middleware setupz
 app.use(admin.options.rootPath, adminRouter);
 app.use(express.urlencoded({ extended: true }));
