@@ -1,10 +1,13 @@
-const errorHandler = (error, res) => {
+const errorHandler = (error, req, res, next) => {
   console.error("Error:", error); // Log the error for debugging purposes
 
-  const results = [{ id: 1 }]; // Define results properly
-  res.status(res.statusCode || 500).send(results[0]?.id.toString());
+  // Set the status code to the existing one or default to 500
+  res.status(error.status || 500);
+
+  // Send the JSON response with an error message and details
   res.json({
     message: error.message || "Internal Server Error",
+    details: error.details || [],
   });
 };
 
