@@ -1,5 +1,5 @@
-import ac from './roles.js';
-import jwt from 'jsonwebtoken';
+import ac from "./roles.js";
+import jwt from "jsonwebtoken";
 
 const accessControl = (resource, action, isOwner) => async (req, res, next) => {
   try {
@@ -10,7 +10,6 @@ const accessControl = (resource, action, isOwner) => async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const isOwnerValue = await isOwner(req.params.filename, req.user);
-    console.log(isOwnerValue);
     if (!isOwnerValue) {
       return res.status(403).json({ error: "Forbidden" });
     }
@@ -22,7 +21,9 @@ const accessControl = (resource, action, isOwner) => async (req, res, next) => {
       res.status(403).json({ error: "Forbidden" });
     }
   } catch (error) {
-    next({ status: 401, error: "Unauthorized access" });
+    const err = new Error("Unauthorized access: " + error.message);
+    err.status = 401;
+    next(err);
   }
 };
 
