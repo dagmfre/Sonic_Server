@@ -6,6 +6,7 @@ const getTopArtists = async (req, res, next) => {
     const artistIds =
       response?.data?.data?.map((artistData) => artistData.id) || [];
     const firstTenArtistIds = artistIds.slice(0, 10);
+
     const artistTopSongs = firstTenArtistIds.map(async (artistId) => {
       try {
         const response2 = await axios.get(
@@ -13,9 +14,10 @@ const getTopArtists = async (req, res, next) => {
         );
         return response2.data;
       } catch (error) {
-        res
-          .status(500)
-          .json({ error, error: `Error fetching albums for artist` + error });
+        // Instead of handling error here, propagate it
+        throw new Error(
+          `Error fetching albums for artist ${artistId}: ${error.message}`
+        );
       }
     });
 
@@ -26,9 +28,8 @@ const getTopArtists = async (req, res, next) => {
 
     res.json(validSongs);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error, error: `Error fetching artist data` + error });
+    // Use next(error) to pass to global error handler
+    next(error);
   }
 };
 
@@ -37,9 +38,8 @@ const getArtists = async (req, res, next) => {
     const response = await axios.get("https://api.deezer.com/genre/2/artists");
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
-    res
-      .status(500)
-      .json({ error, error: `Error fetching all artists` + error });
+    // Use next(error) to pass to global error handler
+    next(new Error(`Error fetching all artists: ${error.message}`));
   }
 };
 
@@ -47,41 +47,49 @@ const getTracks = async (req, res, next) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
+      res.status(401);
+      return next(new Error("Unauthorized"));
     }
-    const response = await axios.get(
-      "https://sonic-server.vercel.app/api/topArtists",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+
+    // Assuming this is running on the same server, call getTopArtists directly
+    // instead of making an HTTP request
+    const topArtistsResponse = await getTopArtists(req, res, next);
+
+    // Safely access the artist data and handle potential undefined values
+    const artistsData = topArtistsResponse?.data?.filter(
+      (artist) => artist?.data?.[1]?.artist?.tracklist
     );
-    console.log(response);
-    const artistsData = response.data?.map((artist, index) => artist.data[1]);
+
+    if (!artistsData?.length) {
+      throw new Error("No valid artist data found");
+    }
 
     const trackListPromises = artistsData.map(async (artist) => {
+      const tracklistUrl = artist.data[1].artist.tracklist;
+      if (!tracklistUrl) {
+        return null;
+      }
+
       try {
-        const response2 = await axios.get(artist?.artist?.tracklist);
-        return response2.data;
+        const response = await axios.get(tracklistUrl);
+        return response.data;
       } catch (error) {
-        res
-          .status(500)
-          .json({ error, error: `Error fetching albums for artist` + error });
+        console.error(`Error fetching tracklist: ${error.message}`);
+        return null; // Return null instead of throwing to handle individual failures
       }
     });
 
     const resolvedTrackList = await Promise.all(trackListPromises);
-    const validTrackList = resolvedTrackList.filter(
-      (albums) => albums !== null
-    );
+    const validTrackList = resolvedTrackList
+      .filter((tracklist) => tracklist?.data)
+      .map((tracklist) => ({
+        data: tracklist.data.slice(0, 10),
+      }));
 
-    const slicedTrackList = validTrackList.map((tracklist) => ({
-      data: tracklist.data.slice(0, 10),
-    }));
-    res.json(slicedTrackList);
+    res.json(validTrackList);
   } catch (error) {
-    next({ error, error: `Error fetching tracks` + error });
+    console.error("Error in getTracks:", error);
+    next(error);
   }
 };
 
