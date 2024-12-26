@@ -1,6 +1,0 @@
-version: '26.1'
-services:
-  backend:
-    image: ./
-    env_file:
-      - .env
