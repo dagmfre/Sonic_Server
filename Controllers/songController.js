@@ -1,3 +1,4 @@
+// filepath: /d:/ONLINE-COURSE/Web_Development/PROJECTS/Sonic/Sonic Server/Controllers/songController.js
 import Song from "../Models/Song/Song.js";
 import User from "../Models/Users/userModel.js";
 import jwt from "jsonwebtoken";
@@ -14,15 +15,15 @@ const songUploader = async (req, res, next) => {
   });
 
   try {
-    const savedSong = await newSong.uploadSong(newSong);
+    const savedSong = await newSong.uploadSong(); 
     await User.findByIdAndUpdate(decoded.id, {
       $push: { uploadedSongs: newSong },
     });
     console.log("Song Saved Successfully", savedSong);
     res.send(savedSong);
   } catch (error) {
-    console.error("Error saving song:", error);
-    next({ error, status: 500, error: "Error uploading song" + error });
+    console.log("Error saving song:", error);
+    next({ error, status: 500, error: "Error uploading song: " + error.message });
   }
 };
 
