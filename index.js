@@ -4,7 +4,7 @@ import globalErrorHandler from "./Utils/globalErrorHandler.js";
 import isAuthenticated from "./Utils/authMiddleware.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { admin, adminRouter } from "./Config/adminConfig.js";
+import { admin, adminRouter } from "./Config/admin.js";
 
 // Importing route handlers
 import artistRoutes from "./Routes/artistRoutes.js";
