@@ -34,9 +34,9 @@
     "url": "^0.11.4"
   },
   "optionalDependencies": {
-    "@rollup/rollup-darwin-arm64": "latest",
-    "@rollup/rollup-darwin-x64": "latest",
-    "@rollup/rollup-linux-x64-gnu": "latest",
-    "@rollup/rollup-win32-x64-msvc": "latest"
+    "@rollup/rollup-darwin-arm64": "4.9.5",
+    "@rollup/rollup-darwin-x64": "4.9.5",
+    "@rollup/rollup-linux-x64-gnu": "4.9.5",
+    "@rollup/rollup-win32-x64-msvc": "4.9.5"
   }
 }
