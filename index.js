@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 app.use(admin.options.rootPath, adminRouter);
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://sonic-client.vercel.app",
   credentials: true,
 };
 app.use(cors(corsOptions));
