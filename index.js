@@ -31,6 +31,12 @@ app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: "https://sonic-client.onrender.com",
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["set-cookie"],
+  maxAge: 86400, // 24 hours
+  sameSite: "none",
+  secure: true,
 };
 app.use(cors(corsOptions));
 app.use(express.json());
