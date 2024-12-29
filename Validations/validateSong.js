@@ -9,8 +9,6 @@ const titleValidator = body("title")
 const singerValidator = body("singer")
   .notEmpty()
   .withMessage("Singer should not be empty")
-  .isAlpha()
-  .withMessage("Singer name should only be an alpha characters(letters)")
   .isLength({ min: 2, max: 100 })
   .withMessage("Singer must be between 2 and 100 characters");
 

@@ -3,6 +3,8 @@ import userModel from "../Models/Users/userModel.js";
 const isAuthenticated = async (req, res, next) => {
   const token = req.cookies.token;
 
+  console.log(req.cookies);
+  
   if (!token) {
     return res.status(401).json({ message: "Authorization denied" });
   }
