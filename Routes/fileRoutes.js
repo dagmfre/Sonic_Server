@@ -8,20 +8,54 @@ const router = express.Router();
 const isOwner = async (filename, sender) => {
   try {
     // Find a user who owns the file, either audio or image
-    const fileOwner = await User.findOne({
-      $or: [
-        { "uploadedSongs.audioFileName": filename },
-      ],
-    });
+    let fileOwner;
+    if (
+      filename.endsWith(".jpg") ||
+      filename.endsWith(".jpeg") ||
+      filename.endsWith(".png") ||
+      filename.endsWith(".gif")
+    ) {
+      fileOwner = await User.findOne({
+        "uploadedSongs.imageFileName": filename,
+      });
+    } else if (filename.endsWith(".mp3")) {
+      fileOwner = await User.findOne({
+        "uploadedSongs.audioFileName": filename,
+      });
+    }
 
     if (!fileOwner) {
       throw new Error("File owner not found");
     }
 
-    console.log(sender.id === fileOwner.id);
-    
-
     return sender.id === fileOwner.id;
+  } catch (error) {
+    console.error("Ownership verification failed:", error.message);
+    throw new Error(`Ownership verification failed: ${error.message}`);
+  }
+};
+
+const isOwnerDeleting = async (fileNames, sender) => {
+  try {
+    if (!fileNames) {
+      throw new Error("fileNames is undefined");
+    }
+
+    const splittedFileNames = fileNames.split(",");
+
+    const [audioFileName, imageFileName] = splittedFileNames;
+    const audioOwner = await User.findOne({
+      "uploadedSongs.audioFileName": audioFileName,
+    });
+    const imageOwner = await User.findOne({
+      "uploadedSongs.imageFileName": imageFileName,
+    });
+
+    if (!audioOwner || !imageOwner || audioOwner.id !== imageOwner.id) {
+      throw new Error("File owner not found or mismatch");
+    }
+
+    return sender.id === audioOwner.id && sender.id === imageOwner.id;
   } catch (error) {
     console.error("Ownership verification failed:", error.message);
     throw new Error(`Ownership verification failed: ${error.message}`);
@@ -31,7 +65,7 @@ const isOwner = async (filename, sender) => {
 router.get("/:filename", accessControl("files", "readOwn", isOwner), getFile);
 router.delete(
   "/:filename",
-  accessControl("files", "deleteOwn", isOwner),
+  accessControl("files", "deleteOwn", isOwnerDeleting),
   deleteFile
 );
 

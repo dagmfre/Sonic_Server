@@ -14,6 +14,7 @@ import fileRoutes from "./Routes/fileRoutes.js";
 import tracksRoute from "./Routes/tracksRoute.js";
 import loginRoute from "./Routes/loginRoutes.js";
 import signupRoute from "./Routes/signupRoutes.js";
+import userRoutes from "./Routes/userRoutes.js";
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ app.use("/api/topArtists", topArtists);
 app.use("/api/tracks", tracksRoute);
 app.use("/api/songs", songRoutes);
 app.use("/file", fileRoutes);
+app.use("/api/user", userRoutes);
 
 // Global error handler middleware
 app.use(globalErrorHandler);

@@ -1,6 +1,6 @@
-import Song from '../Models/Song/Song.js';
-import conn from '../Config/db.js';
-import bucketPromise from '../Config/gridFs.js';
+import conn from "../Config/db.js";
+import bucketPromise from "../Config/gridFs.js";
+import User from "../Models/Users/userModel.js";
 
 const getFile = async (req, res, next) => {
   try {
@@ -18,29 +18,37 @@ const getFile = async (req, res, next) => {
 
     readstream.on("error", (error) => {
       console.error("Error while streaming image:", error);
-      next({ error, 
-        status: 500,
-        error: "Error streaming image" + error,
-      });
+      next({ error, status: 500, message: "Error streaming image" });
     });
 
     readstream.pipe(res);
   } catch (error) {
     console.error("Error fetching image:", error);
-    next({ error, 
-      status: 500,
-      error: "Internal server error" + error,
-    });
+    next({ error, status: 500, message: "Internal server error" });
   }
 };
 
 const deleteFile = async (req, res, next) => {
-  const fileNames = req.params.fileNames.split(",");
+  const fileNames = req.params.filename.split(",");
   const bucket = await bucketPromise;
 
   try {
     const [audioFileName, imageFileName] = fileNames;
-    await Song.deleteSongMetaDataByFileName(audioFileName);
+    console.log(audioFileName, imageFileName);
+
+    try {
+      await User.updateOne(
+        { "uploadedSongs.audioFileName": audioFileName },
+        { $pull: { uploadedSongs: { audioFileName: audioFileName } } }
+      );
+    } catch (error) {
+      console.error("Error deleting song from database:", error);
+      return next({
+        error,
+        status: 500,
+        message: "Error deleting song from database",
+      });
+    }
 
     const audioFile = await conn.db
       .collection("uploads.files")
@@ -54,9 +62,10 @@ const deleteFile = async (req, res, next) => {
         await bucket.delete(audioFile._id);
       } catch (error) {
         console.error("Error deleting audio file from bucket:", error);
-        next({ error, 
+        return next({
+          error,
           status: 500,
-          error: "Error deleting audio file from bucket" + error,
+          message: "Error deleting audio file from bucket",
         });
       }
     }
@@ -66,9 +75,10 @@ const deleteFile = async (req, res, next) => {
         await bucket.delete(imageFile._id);
       } catch (error) {
         console.error("Error deleting image file from bucket:", error);
-        next({ error, 
+        return next({
+          error,
           status: 500,
-          error: "Error deleting image file from bucket" + error,
+          message: "Error deleting image file from bucket",
         });
       }
     }
@@ -76,10 +86,8 @@ const deleteFile = async (req, res, next) => {
     return res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
     console.error("Error deleting item:", error);
-    next({ error, 
-      status: 500,
-      error: "Internal server error" + error,
-    });
+    next({ error, status: 500, message: "Internal server error" });
   }
 };
+
 export { getFile, deleteFile };

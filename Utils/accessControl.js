@@ -9,6 +9,7 @@ const accessControl = (resource, action, isOwner) => async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    
     const isOwnerValue = await isOwner(req.params.filename, req.user);
     if (!isOwnerValue) {
       return res.status(403).json({ error: "Forbidden" });
