@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import User from "../Models/Users/userModel.js";
 
 const getTopArtists = async (req, res, next) => {
   try {
