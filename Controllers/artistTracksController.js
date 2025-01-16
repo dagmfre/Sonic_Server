@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwt from "jsonwebtoken";
 
 const getTopArtists = async (req, res, next) => {
   try {
