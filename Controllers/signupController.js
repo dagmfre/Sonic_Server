@@ -20,12 +20,10 @@ const signupController = async (req, res, next) => {
     const role = "user";
     const token = createSecretToken(user._id, role);
     res.cookie("token", token, {
-      httpOnly: true,
       secure: true, // Required for HTTPS
       sameSite: "none", // Required for cross-origin
       maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
       path: "/",
-      domain: ".onrender.com", // Adjust this to match your domain
     });
     res
       .status(201)
