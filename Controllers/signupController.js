@@ -19,15 +19,13 @@ const signupController = async (req, res, next) => {
     const user = await newUser.save();
     const role = "user";
     const token = createSecretToken(user._id, role);
-    res.cookie("token", token, {
-      secure: true, // Required for HTTPS
-      sameSite: "none", // Required for cross-origin
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-      path: "/",
+    
+    res.status(201).json({ 
+      message: "User signed in successfully", 
+      success: true, 
+      user,
+      token 
     });
-    res
-      .status(201)
-      .json({ message: "User signed in successfully", success: true, user });
   } catch (error) {
     next({ error, status: 500, error: "Error registering user" + error });
   }

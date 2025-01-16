@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 
 const accessControl = (resource, action, isOwner) => async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ error: "Unauthorized access" });
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    
+
     const isOwnerValue = await isOwner(req.params.filename, req.user);
     if (!isOwnerValue) {
       return res.status(403).json({ error: "Forbidden" });

@@ -45,14 +45,18 @@ const getArtists = async (req, res, next) => {
 
 const getTracks = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-      res.status(401);
-      return next(new Error("Unauthorized"));
+      return res.status(401).json({ message: "Not authorized, no token" });
     }
 
-    // Assuming this is running on the same server, call getTopArtists directly
-    // instead of making an HTTP request
+    // Verify token
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const topArtistsResponse = await getTopArtists(req, res, next);
 
     // Safely access the artist data and handle potential undefined values

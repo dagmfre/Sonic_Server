@@ -1,13 +1,15 @@
 import jwt from "jsonwebtoken";
 import userModel from "../Models/Users/userModel.js";
-const isAuthenticated = async (req, res, next) => {
-  const token = req.cookies.token;
 
-  if (!token) {
+const isAuthenticated = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: "Authorization denied" });
   }
 
   try {
+    const token = authHeader.split(' ')[1]; // Get token from Bearer token
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const user = await userModel.findById({ _id: decoded.id });
 
@@ -18,15 +20,11 @@ const isAuthenticated = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    error,
-      next({
-        error,
-        status: 401,
-        error:
-          "Internal server error, could not retrieve user" +
-          " " +
-          error.message,
-      });
+    next({
+      error,
+      status: 401,
+      error: "Internal server error, could not retrieve user" + " " + error.message,
+    });
   }
 };
 
