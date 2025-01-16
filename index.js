@@ -38,10 +38,10 @@ app.use("/login", loginRoute);
 app.use("/register", signupRoute);
 
 // Authentication middleware and protected routes
-app.use(isAuthenticated);
 app.use("/api/artists", artistRoutes);
 app.use("/api/topArtists", topArtists);
 app.use("/api/tracks", tracksRoute);
+app.use(isAuthenticated);
 app.use("/api/songs", songRoutes);
 app.use("/file", fileRoutes);
 app.use("/api/user", userRoutes);
