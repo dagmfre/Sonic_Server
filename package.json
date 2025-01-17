@@ -31,7 +31,9 @@
     "multer-gridfs-storage": "^5.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "url": "^0.11.4",
-    "@rollup/rollup-linux-x64-gnu": "4.30.1"
+    "url": "^0.11.4"
+  },
+  "resolutions": {
+    "rollup": "npm:@rollup/wasm-node"
   }
 }
