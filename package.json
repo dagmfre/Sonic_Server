@@ -33,7 +33,9 @@
     "react-dom": "^19.0.0",
     "url": "^0.11.4"
   },
-  "resolutions": {
-    "rollup": "npm:@rollup/wasm-node"
+  "overrides": {
+    "npm": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }
