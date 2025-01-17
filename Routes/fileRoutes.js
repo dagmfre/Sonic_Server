@@ -69,10 +69,6 @@ const isOwnerDeleting = async (fileNames, sender) => {
 };
 
 router.get("/:filename", getFile);
-router.delete(
-  "/:filename",
-  accessControl("files", "deleteOwn", isOwnerDeleting),
-  deleteFile
-);
+router.delete("/:filename", deleteFile);
 
 export default router;
