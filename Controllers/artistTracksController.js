@@ -1,6 +1,4 @@
 import axios from "axios";
-import jwt from "jsonwebtoken";
-import User from "../Models/Users/userModel.js";
 
 const getTopArtists = async (req, res, next) => {
   try {
@@ -31,7 +29,11 @@ const getTopArtists = async (req, res, next) => {
     res.json(validSongs);
   } catch (error) {
     // Use next(error) to pass to global error handler
-    next(error);
+    next({
+      error,
+      status: 500,
+      message: "Error fetching top artists: " + error.message,
+    });
   }
 };
 
@@ -41,7 +43,11 @@ const getArtists = async (req, res, next) => {
     res.json(response.data?.data.slice(0, 10));
   } catch (error) {
     // Use next(error) to pass to global error handler
-    next(new Error(`Error fetching all artists: ${error.message}`));
+    next({
+      error,
+      status: 500,
+      message: "Error fetching all artists: " + error.message,
+    });
   }
 };
 
@@ -69,7 +75,7 @@ const getTracks = async (req, res, next) => {
         return response.data;
       } catch (error) {
         console.error(`Error fetching tracklist: ${error.message}`);
-        return null; // Return null instead of throwing to handle individual failures
+        return null;
       }
     });
 
@@ -83,7 +89,11 @@ const getTracks = async (req, res, next) => {
     res.json(validTrackList);
   } catch (error) {
     console.error("Error in getTracks:", error);
-    next(error);
+    next({
+      error,
+      status: 500,
+      message: "Error in getTracks: " + error.message,
+    });
   }
 };
 

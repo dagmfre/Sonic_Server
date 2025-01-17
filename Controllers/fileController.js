@@ -23,8 +23,11 @@ const getFile = async (req, res, next) => {
 
     readstream.pipe(res);
   } catch (error) {
-    console.error("Error fetching image:", error);
-    next({ error, status: 500, message: "Internal server error" });
+    next({
+      error,
+      status: 500,
+      message: `Error fetching image: ${error.message}`,
+    });
   }
 };
 
@@ -34,7 +37,6 @@ const deleteFile = async (req, res, next) => {
 
   try {
     const [audioFileName, imageFileName] = fileNames;
-    console.log(audioFileName, imageFileName);
 
     try {
       await User.updateOne(
@@ -42,11 +44,10 @@ const deleteFile = async (req, res, next) => {
         { $pull: { uploadedSongs: { audioFileName: audioFileName } } }
       );
     } catch (error) {
-      console.error("Error deleting song from database:", error);
       return next({
         error,
         status: 500,
-        message: "Error deleting song from database",
+        message: `Error deleting song from database: ${error.message}`,
       });
     }
 
@@ -61,11 +62,10 @@ const deleteFile = async (req, res, next) => {
       try {
         await bucket.delete(audioFile._id);
       } catch (error) {
-        console.error("Error deleting audio file from bucket:", error);
         return next({
           error,
           status: 500,
-          message: "Error deleting audio file from bucket",
+          message: `Error deleting audio file from bucket: ${error.message}`,
         });
       }
     }
@@ -74,19 +74,21 @@ const deleteFile = async (req, res, next) => {
       try {
         await bucket.delete(imageFile._id);
       } catch (error) {
-        console.error("Error deleting image file from bucket:", error);
         return next({
           error,
           status: 500,
-          message: "Error deleting image file from bucket",
+          message: `Error deleting image file from bucket: ${error.message}`,
         });
       }
     }
 
     return res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
-    console.error("Error deleting item:", error);
-    next({ error, status: 500, message: "Internal server error" });
+    next({
+      error,
+      status: 500,
+      message: `Error deleting item: ${error.message}`,
+    });
   }
 };
 

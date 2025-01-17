@@ -29,7 +29,7 @@ const loginController = async (req, res, next) => {
     next({
       error,
       status: 500,
-      error: "Error logging in user" + error.message,
+      message: "Error logging in user" + error.message,
     });
   }
 };

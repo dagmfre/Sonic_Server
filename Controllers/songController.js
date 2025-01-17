@@ -25,14 +25,12 @@ const songUploader = async (req, res, next) => {
       },
       { new: true }
     );
-    console.log("Song Saved Successfully");
     res.send(savedSong);
   } catch (error) {
-    console.log("Error saving song:", error);
     next({
       error,
       status: 500,
-      error: "Error uploading song: " + error.message,
+      message: "Error uploading song: " + error.message,
     });
   }
 };

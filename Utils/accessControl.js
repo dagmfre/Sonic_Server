@@ -24,7 +24,11 @@ const accessControl = (resource, action, isOwner) => async (req, res, next) => {
   } catch (error) {
     const err = new Error("Unauthorized access: " + error.message);
     err.status = 401;
-    next(err);
+    next({
+      error,
+      status: 401,
+      message: "Unauthorized access: " + error.message,
+    });
   }
 };
 

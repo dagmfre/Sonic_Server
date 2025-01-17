@@ -19,7 +19,11 @@ const checkValidation = (req, res, next) => {
     }
     next();
   } catch (error) {
-    next(error);
+    next({
+      error,
+      status: 400,
+      message: "Validation failed: " + error.message,
+    });
   }
 };
 
@@ -41,9 +45,9 @@ const handleUpload = (req, res, next) => {
   return upload.fields([{ name: "image" }, { name: "song" }])(
     req,
     res,
-    (err) => {
-      if (err) {
-        const error = new Error(`File upload failed: ${err.message}`);
+    (error) => {
+      if (error) {
+        const error = new Error(`File upload failed: ${error.message}`);
         error.status = 400;
         return next(error);
       }
@@ -59,7 +63,11 @@ router.post(
     try {
       await accessControl("songs", "createOwn", isOwner)(req, res, next);
     } catch (error) {
-      next(new Error(`Access control failed: ${error.message}`));
+      next({
+        error,
+        status: 500,
+        message: "Access control failed: " + error.message,
+      });
     }
   },
   validateSong,
@@ -68,7 +76,11 @@ router.post(
     try {
       await songUploader(req, res, next);
     } catch (error) {
-      next(error);
+      next({
+        error,
+        status: 500,
+        message: "Error uploading song: " + error.message,
+      });
     }
   }
 );

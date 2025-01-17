@@ -30,8 +30,11 @@ const isOwner = async (filename, sender) => {
 
     return sender.id === fileOwner.id;
   } catch (error) {
-    console.error("Ownership verification failed:", error.message);
-    throw new Error(`Ownership verification failed: ${error.message}`);
+    next({
+      error,
+      status: 500,
+      message: "Ownership verification failed: " + error.message,
+    });
   }
 };
 
@@ -57,12 +60,15 @@ const isOwnerDeleting = async (fileNames, sender) => {
 
     return sender.id === audioOwner.id && sender.id === imageOwner.id;
   } catch (error) {
-    console.error("Ownership verification failed:", error.message);
-    throw new Error(`Ownership verification failed: ${error.message}`);
+    next({
+      error,
+      status: 500,
+      message: "Ownership verification failed: " + error.message,
+    });
   }
 };
 
-router.get("/:filename", accessControl("files", "readOwn", isOwner), getFile);
+router.get("/:filename", getFile);
 router.delete(
   "/:filename",
   accessControl("files", "deleteOwn", isOwnerDeleting),
