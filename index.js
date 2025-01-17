@@ -41,9 +41,9 @@ app.use("/register", signupRoute);
 app.use("/api/artists", artistRoutes);
 app.use("/api/topArtists", topArtists);
 app.use("/api/tracks", tracksRoute);
+app.use("/file", fileRoutes);
 app.use(isAuthenticated);
 app.use("/api/songs", songRoutes);
-app.use("/file", fileRoutes);
 app.use("/api/user", userRoutes);
 
 // Global error handler middleware
