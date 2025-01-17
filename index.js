@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 app.use(admin.options.rootPath, adminRouter);
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
-  origin: "https://sonic-fun.onrender.com",
+  origin: "https://sonic-client.onrender.com",
 };
 app.use(cors(corsOptions));
 app.use(express.json());
