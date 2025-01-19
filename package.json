@@ -47,10 +47,10 @@
     "pnpm": ">=8.0.0"
   },
   "overrides": {
-  "rollup": {
-    "optionalDependencies": {
-      "@rollup/rollup-linux-x64-gnu": false
+    "rollup": {
+      "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": false
+      }
     }
   }
-}
 }
