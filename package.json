@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "packageManager": "pnpm@8.0.0",
+  "packageManager": "pnpm@8.1.0",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
@@ -35,10 +35,9 @@
     "react-dom": "^18.2.0"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.26.0"
+    "@rollup/rollup-linux-x64-gnu": "4.30.1"
   },
   "devDependencies": {
-    "rollup": "^4.30.1",
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@babel/register": "^7.23.9",
