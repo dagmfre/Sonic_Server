@@ -3,7 +3,6 @@ import cors from "cors";
 import globalErrorHandler from "./Utils/globalErrorHandler.js";
 import isAuthenticated from "./Utils/authMiddleware.js";
 import dotenv from "dotenv";
-import { admin, adminRouter } from "./Config/admin.js";
 
 // Importing route handlers
 import artistRoutes from "./Routes/artistRoutes.js";
@@ -25,7 +24,6 @@ app.get("/", (req, res) => {
 });
 
 // Middleware setupz
-app.use(admin.options.rootPath, adminRouter);
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: "https://sonic-client.onrender.com",
